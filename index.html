@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenMind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Custom scrollbar for mobile menu */
+        .body {
+            font-family: 'Manrope', sans-serif !important;
+        }
+
+        html,
+        body {
+            overflow-x: hidden !important;
+            width: 100vw !important;
+        }
+
+        body {
+            user-select: none;
+            /* Prevents text selection */
+            -webkit-user-select: none;
+            /* For Safari/Chrome */
+            -moz-user-select: none;
+            /* For Firefox */
+            -ms-user-select: none;
+            /* For IE/Edge */
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Mobile menu animation */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Hero section animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .fade-in-up-delay {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        /* Custom input focus styles */
+        .custom-input:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            border-color: #6366f1;
+        }
+
+        /* Button hover effects */
+        .btn-primary {
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Logo responsive sizing */
+        .logo-responsive {
+            width: clamp(120px, 18vw, 198px);
+            height: auto;
+            max-width: 198px;
+        }
+
+        /* Inside your existing <style> tag */
+        /* Inside your existing <style> tag */
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: #fff;
+            transition: left 0.3s ease-in-out;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Remove this */
+        }
+
+        .mobile-menu .p-4 {
+            height: 100%;
+            overflow-y: auto;
+            /* Change to auto */
+            max-height: calc(100vh - 64px);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        /* Add this new class */
+        .body-scroll-lock {
+            overflow: hidden !important;
+            width: 100vw !important;
+            height: 100vh !important;
+
+            top: 0;
+            left: 0;
+
+        }
+
+        .mobile-menu .p-4::-webkit-scrollbar {
+            display: none;
+            /* For Chrome, Safari and Opera */
+        }
+
+        /* ...existing code... */
+
+        .mobile-menu.open {
+            left: 0;
+
+        }
+
+        /* Overlay styling */
+        #mobileMenuOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            /* semi-transparent */
+            -webkit-backdrop-filter: blur(16px);
+            /* Safari/Android fallback */
+            backdrop-filter: blur(16px);
+            /* glass effect */
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 998;
+        }
+
+        #mobileMenuOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Float animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-08px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        .glass-effect {
+            background: rgba(0, 0, 0, 0.205);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(139, 92, 246, 0.8);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .gradient-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Replace your .popup-enter and .popup-exit with this for smooth feed-in on all devices */
+.popup-enter {
+    animation: popupFeedIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popupFeedIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -40%) scale(0.96);
+        filter: blur(8px);
+    }
+    70% {
+        opacity: 1;
+        transform: translate(-50%, -52%) scale(1.03);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        filter: blur(0px);
+    }
+}
+.popup-exit {
+    animation: popupFeedOut 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes popupFeedOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.96);
+        filter: blur(8px);
+    }
+}
+
+/* Mobile fix: Make sure popup is centered and animates from center on all screens */
+@media (max-width: 640px) {
+    .glass-effect {
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 95vw !important;
+        max-width: 98vw !important;
+        height: auto !important;
+        min-height: 90vh !important;
+        border-radius: 18px !important;
+    }
+}
+
+        /* Custom scrollbar for textarea */
+        .glass-textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .glass-textarea::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .glass-textarea::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .glass-textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @media (hover: hover) and (min-width: 768px) {
+            .image-hover:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+            }
+        }
+
+        /* Enhanced mobile responsive styles */
+        .collab-img-container {
+            width: 100%;
+            max-width: 604px;
+            aspect-ratio: 604/328;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .collab-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
+
+        @media (max-width: 700px) {
+            .collab-img-container {
+                max-width: 98vw;
+                aspect-ratio: 16/9;
+                border-radius: 12px;
+            }
+
+            .collab-img {
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: clamp(1.875rem, 8vw, 2.5rem) !important;
+                line-height: 1.1 !important;
+                font-weight: 700 !important;
+            }
+
+            .ai-title {
+                font-size: clamp(1.875rem, 8vw, 2.5rem) !important;
+                line-height: 1.1 !important;
+                font-weight: 700 !important;
+            }
+
+
+            .blog-title {
+                font-size: clamp(1.75rem, 7vw, 2.25rem) !important;
+                line-height: 1.2 !important;
+                font-weight: 700 !important;
+            }
+
+            .hero-description {
+                font-size: clamp(0.875rem, 4vw, 1rem);
+                line-height: 1.5;
+            }
+
+            .ai-description {
+                font-size: clamp(0.875rem, 4vw, 1rem);
+                line-height: 1.5;
+            }
+
+            /* Remove hover effects on small screens */
+            .image-hover:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            .btn-primary:hover {
+                transform: none !important;
+            }
+
+            /* Ensure all content fits properly */
+            .container,
+            .max-w-7xl,
+            .grid,
+            .flex {
+                width: 100% !important;
+                max-width: 100vw !important;
+                box-sizing: border-box !important;
+                padding-left: 1 !important;
+                padding-right: 1 !important;
+
+            }
+
+            /* Mobile-specific spacing */
+            .mobile-spacing {
+                padding: 1rem !important;
+                margin: 0.5rem 0 !important;
+            }
+
+            /* Mobile card adjustments */
+            .mobile-card {
+                width: 100% !important;
+                /* Full width on mobile */
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                margin-bottom: 1.5rem !important;
+                padding: 1.5rem !important;
+                /* Increased padding */
+            }
+
+            /* Mobile form styling */
+            .mobile-form {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+
+            .mobile-form input,
+            .mobile-form button {
+                width: 100% !important;
+                padding: 0.875rem 1rem !important;
+                border-radius: 0.5rem !important;
+            }
+
+            /* Mobile navigation improvements */
+            .mobile-nav-item {
+                padding: 0.75rem 1rem !important;
+                font-size: 1rem !important;
+            }
+
+            /* Hero image mobile sizing */
+            .hero-image-mobile {
+                width: min(200px, 50vw) !important;
+                height: auto !important;
+                max-width: 200px !important;
+            }
+
+            /* Mobile pricing cards */
+            .pricing-card-mobile {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 0 1.5rem 0 !important;
+            }
+
+            /* Mobile grid adjustments */
+            .mobile-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+        }
+
+        /* Tablet specific styles */
+        @media (min-width: 641px) and (max-width: 1023px) {
+            .hero-title {
+                font-size: clamp(2.5rem, 6vw, 3.5rem) !important;
+                line-height: 1.1 !important;
+            }
+
+            .blog-title {
+                font-size: clamp(2rem, 5vw, 2.75rem) !important;
+                line-height: 1.2 !important;
+            }
+
+            .tablet-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1.5rem !important;
+            }
+        }
+
+        /* ...existing code... */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100vw;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.7);
+            /* semi-transparent */
+            -webkit-backdrop-filter: blur(16px);
+            /* Safari/Android fallback */
+            backdrop-filter: blur(16px);
+            /* glass effect */
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid #e5e7eb;
+            transition: background 0.3s, backdrop-filter 0.3s;
+            will-change: transform;
+        }
+
+        /* ...existing code... */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-family: 'Manrope', sans-serif !important;
+                font-weight: 700 !important;
+                font-style: normal !important;
+                font-size: 65px !important;
+                line-height: 65px !important;
+                letter-spacing: 0.1px !important;
+                max-width: none !important;
+            }
+
+            .ai-title {
+                font-family: 'Manrope', sans-serif !important;
+                font-weight: 700 !important;
+                font-style: normal !important;
+                font-size: 45px !important;
+                line-height: 45px;
+                letter-spacing: 0.1px !important;
+                max-width: none !important;
+            }
+
+            .ai-description {
+                font-family: 'Manrope', sans-serif !important;
+                font-weight: 500 !important;
+                font-style: normal !important;
+                font-size: 25px !important;
+
+            }
+
+            .blog-title {
+                font-family: 'Manrope', sans-serif !important;
+                font-weight: 700 !important;
+                font-style: normal !important;
+                font-size: 50px !important;
+                line-height: 55px !important;
+                letter-spacing: 0.1px !important;
+                max-width: none !important;
+            }
+        }
+
+        /* Additional responsive utilities */
+        .responsive-padding {
+            padding: clamp(1rem, 4vw, 2rem);
+        }
+
+        .responsive-margin {
+            margin: clamp(1rem, 3vw, 2rem) 0;
+        }
+
+        .responsive-text {
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+
+        /* Better button responsiveness */
+        .responsive-button {
+            padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .responsive-button {
+                width: auto;
+            }
+        }
+
+        /* Improved mobile menu */
+        @media (max-width: 1023px) {
+            .mobile-menu {
+                width: min(280px, 80vw);
+            }
+        }
+
+        /* Better image responsiveness */
+        .responsive-image {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        /* Flexible container */
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(1rem, 3vw, 2rem);
+        }
+
+        .flex-item {
+            flex: 1;
+            min-width: min(300px, 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 font-[Manrope] overflow-x-hidden">
+
+    <!-- Navbar -->
+    <header class="w-full border-b border-gray-200 fixed top-0 left-0 bg-white/70 backdrop-blur-lg z-[999]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <img src="assets/Presentation1d-removebg-prfeview 2.png" alt="OpenMind Logo"
+                        class="logo-responsive rounded" />
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="#waitlist"
+                        class="text-gray-600 hover:text-indigo-600 hover:underline underline-offset-4 transition-colors duration-200 text-sm font-medium">Waitlist</a>
+                    <a href="#features"
+                        class="text-gray-600 hover:text-indigo-600 hover:underline underline-offset-4 transition-colors duration-200 text-sm font-medium">Features</a>
+                    <a href="#pricing"
+                        class="text-gray-600 hover:text-indigo-600 hover:underline underline-offset-4 transition-colors duration-200 text-sm font-medium">Pricing</a>
+                    <a href="#team"
+                        class="text-gray-600 hover:text-indigo-600 hover:underline underline-offset-4 transition-colors duration-200 text-sm font-medium">Wiora AI</a>
+                    <a href="mailto:rssdctech@gmail.com"
+                        class="text-gray-600 hover:text-indigo-600 hover:underline underline-offset-4 transition-colors duration-200 text-sm font-medium">Contact
+                        Us</a>
+                </nav>
+
+                <div class="hidden lg:block">
+                    <button onclick="toggleContactPopup()"
+                        class="relative w-[180px] h-12 focus:outline-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="180" height="48" viewBox="0 0 180 48" fill="none"
+                            class="absolute inset-0 w-full h-full transition-all duration-300 group-hover:opacity-90 group-hover:scale-105">
+                            <g clip-path="url(#clip-desktop)">
+                                <path
+                                    d="M0 14C0 6.26801 6.26801 0 14 0H166C173.732 0 180 6.26801 180 14V34C180 41.732 173.732 48 166 48H14C6.26801 48 0 41.732 0 34V14Z"
+                                    fill="white" fill-opacity="0.8" />
+                                <rect width="180" height="48" fill="#4A4459" fill-opacity="0.08" />
+                                <path
+                                    d="M180 18V48H66C66 29.4437 100.402 14 143.334 14C156.254 14 168.364 15.6929 180 18Z"
+                                    fill="#4A4459" fill-opacity="0.1" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip-desktop">
+                                    <path
+                                        d="M0 14C0 6.26801 6.26801 0 14 0H166C173.732 0 180 6.26801 180 14V34C180 41.732 173.732 48 166 48H14C6.26801 48 0 41.732 0 34V14Z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <span
+                            class="relative z-10 flex items-center justify-center gap-2 font-semibold text-base h-full text-black transition-colors duration-300 group-hover:text-purple-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20"
+                                fill="none" class="transition-colors duration-300 group-hover:fill-purple-700">
+                                <path
+                                    d="M7.16669 15.8333V4.16663L16.3334 9.99996L7.16669 15.8333ZM8.83335 12.7916L13.2084 9.99996L8.83335 7.20829V12.7916Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Get Started
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button
+                    class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                    onclick="toggleMobileMenu()">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+
+        <div id="mobileMenu" class="mobile-menu">
+            <div class="p-4 h-full flex flex-col bg-white">
+                <div class="flex items-center justify-between mb-8 sticky top-0 bg-white z-10">
+                    <img src="assets/Presentation1d-removebg-prfeview 2.png" alt="OpenMind Logo" class="h-8 w-auto" />
+                    <button onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="space-y-4 flex-1">
+                    <a onclick="toggleMobileMenu()" href="#waitlist"
+                        class="mobile-nav-item block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Waitlist</a>
+                    <a onclick="toggleMobileMenu()" href="#features"
+                        class="mobile-nav-item block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Features</a>
+                    <a onclick="toggleMobileMenu()" href="#pricing"
+                        class="mobile-nav-item block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Pricing</a>
+                    <a onclick="toggleMobileMenu()" href="#team"
+                        class="mobile-nav-item block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Wiora AI</a>
+                    <a onclick="toggleMobileMenu()" href="mailto:rssdctech@gmail.com"
+                        class="mobile-nav-item block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Contact
+                        Us</a>
+
+                    <div class="mt-6">
+                        <button onclick="toggleContactPopup()"
+                            class="relative w-[180px] h-12 focus:outline-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="180" height="48" viewBox="0 0 180 48"
+                                fill="none"
+                                class="absolute inset-0 w-full h-full transition-all duration-300 group-hover:opacity-90 group-hover:scale-105">
+                                <g clip-path="url(#clip-moblile)">
+                                    <path
+                                        d="M0 14C0 6.26801 6.26801 0 14 0H166C173.732 0 180 6.26801 180 14V34C180 41.732 173.732 48 166 48H14C6.26801 48 0 41.732 0 34V14Z"
+                                        fill="white" fill-opacity="0.8" />
+                                    <rect width="180" height="48" fill="#4A4459" fill-opacity="0.08" />
+                                    <path
+                                        d="M180 18V48H66C66 29.4437 100.402 14 143.334 14C156.254 14 168.364 15.6929 180 18Z"
+                                        fill="#4A4459" fill-opacity="0.1" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip-moblile">
+                                        <path
+                                            d="M0 14C0 6.26801 6.26801 0 14 0H166C173.732 0 180 6.26801 180 14V34C180 41.732 173.732 48 166 48H14C6.26801 48 0 41.732 0 34V14Z" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                            <span
+                                class="relative z-10 flex items-center justify-center gap-2 font-semibold text-base h-full text-black transition-colors duration-300 group-hover:text-purple-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20"
+                                    fill="none" class="transition-colors duration-300 group-hover:fill-purple-700">
+                                    <path
+                                        d="M7.16669 15.8333V4.16663L16.3334 9.99996L7.16669 15.8333ZM8.83335 12.7916L13.2084 9.99996L8.83335 7.20829V12.7916Z"
+                                        fill="currentColor" />
+                                </svg>
+                                Get Started
+                            </span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <div id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+    </header>
+
+    <!-- Hero Section -->
+    <section  class="relative responsive-padding py-12 sm:py-16 lg:py-20 xl:py-24"
+        style="padding-top: 88px;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 lg:gap-12 items-center">
+
+                <!-- Left Content -->
+                <div class="fade-in-up order-2 lg:order-1">
+                    <div class="responsive-margin">
+                        <!-- Badge -->
+                        <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-6"
+                            style="gap: 0.5rem; border: 1px solid #6750A4;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
+                                fill="none">
+                                <path
+                                    d="M0 15V12.9188C0 12.4938 0.10625 12.1 0.31875 11.7375C0.53125 11.375 0.825 11.1 1.2 10.9125C1.375 10.825 1.54375 10.7438 1.70625 10.6688C1.88125 10.5938 2.0625 10.525 2.25 10.4625V15H0ZM3 9.75C2.375 9.75 1.84375 9.53125 1.40625 9.09375C0.96875 8.65625 0.75 8.125 0.75 7.5C0.75 6.875 0.96875 6.34375 1.40625 5.90625C1.84375 5.46875 2.375 5.25 3 5.25C3.625 5.25 4.15625 5.46875 4.59375 5.90625C5.03125 6.34375 5.25 6.875 5.25 7.5C5.25 8.125 5.03125 8.65625 4.59375 9.09375C4.15625 9.53125 3.625 9.75 3 9.75ZM3 8.25C3.2125 8.25 3.3875 8.18125 3.525 8.04375C3.675 7.89375 3.75 7.7125 3.75 7.5C3.75 7.2875 3.675 7.1125 3.525 6.975C3.3875 6.825 3.2125 6.75 3 6.75C2.7875 6.75 2.60625 6.825 2.45625 6.975C2.31875 7.1125 2.25 7.2875 2.25 7.5C2.25 7.7125 2.31875 7.89375 2.45625 8.04375C2.60625 8.18125 2.7875 8.25 3 8.25ZM3 15V12.9C3 12.475 3.10625 12.0875 3.31875 11.7375C3.54375 11.375 3.8375 11.1 4.2 10.9125C4.975 10.525 5.7625 10.2375 6.5625 10.05C7.3625 9.85 8.175 9.75 9 9.75C9.825 9.75 10.6375 9.85 11.4375 10.05C12.2375 10.2375 13.025 10.525 13.8 10.9125C14.1625 11.1 14.45 11.375 14.6625 11.7375C14.8875 12.0875 15 12.475 15 12.9V15H3ZM4.5 13.5H13.5V12.9C13.5 12.7625 13.4625 12.6375 13.3875 12.525C13.325 12.4125 13.2375 12.325 13.125 12.2625C12.45 11.925 11.7688 11.675 11.0813 11.5125C10.3938 11.3375 9.7 11.25 9 11.25C8.3 11.25 7.60625 11.3375 6.91875 11.5125C6.23125 11.675 5.55 11.925 4.875 12.2625C4.7625 12.325 4.66875 12.4125 4.59375 12.525C4.53125 12.6375 4.5 12.7625 4.5 12.9V13.5ZM9 9C8.175 9 7.46875 8.70625 6.88125 8.11875C6.29375 7.53125 6 6.825 6 6C6 5.175 6.29375 4.46875 6.88125 3.88125C7.46875 3.29375 8.175 3 9 3C9.825 3 10.5312 3.29375 11.1188 3.88125C11.7063 4.46875 12 5.175 12 6C12 6.825 11.7063 7.53125 11.1188 8.11875C10.5312 8.70625 9.825 9 9 9ZM9 7.5C9.4125 7.5 9.7625 7.35625 10.05 7.06875C10.35 6.76875 10.5 6.4125 10.5 6C10.5 5.5875 10.35 5.2375 10.05 4.95C9.7625 4.65 9.4125 4.5 9 4.5C8.5875 4.5 8.23125 4.65 7.93125 4.95C7.64375 5.2375 7.5 5.5875 7.5 6C7.5 6.4125 7.64375 6.76875 7.93125 7.06875C8.23125 7.35625 8.5875 7.5 9 7.5ZM15 9.75C14.375 9.75 13.8438 9.53125 13.4062 9.09375C12.9688 8.65625 12.75 8.125 12.75 7.5C12.75 6.875 12.9688 6.34375 13.4062 5.90625C13.8438 5.46875 14.375 5.25 15 5.25C15.625 5.25 16.1562 5.46875 16.5938 5.90625C17.0313 6.34375 17.25 6.875 17.25 7.5C17.25 8.125 17.0313 8.65625 16.5938 9.09375C16.1562 9.53125 15.625 9.75 15 9.75ZM15 8.25C15.2125 8.25 15.3875 8.18125 15.525 8.04375C15.675 7.89375 15.75 7.7125 15.75 7.5C15.75 7.2875 15.675 7.1125 15.525 6.975C15.3875 6.825 15.2125 6.75 15 6.75C14.7875 6.75 14.6063 6.825 14.4563 6.975C14.3188 7.1125 14.25 7.2875 14.25 7.5C14.25 7.7125 14.3188 7.89375 14.4563 8.04375C14.6063 8.18125 14.7875 8.25 15 8.25ZM15.75 15V10.4625C15.9375 10.525 16.1125 10.5938 16.275 10.6688C16.45 10.7438 16.625 10.825 16.8 10.9125C17.175 11.1 17.4688 11.375 17.6813 11.7375C17.8937 12.1 18 12.4938 18 12.9188V15H15.75Z"
+                                    fill="#6750A4" />
+                            </svg>
+                            <span class="text-sm font-medium" style="color: #6750A4;">Team workspace</span>
+                        </div>
+
+                        <!-- Main Headline -->
+                        <h1 class="hero-title font-bold text-gray-900 mb-6 leading-tight w-full max-w-none">
+                            The one launchpad for
+                            <span class="block text-indigo-600">your startup journey</span>
+                        </h1>
+
+                        <!-- Description -->
+                        <p class="hero-description text-gray-600 leading-relaxed mb-8 max-w-lg responsive-text">
+                            OpenMind Studio helps you go from idea to launch by building real startup teams,
+                            using AI-powered matching, internal tools, mentorship, and a collaborative workspace all in
+                            one place.
+                        </p>
+
+                        <!-- Waitlist Form -->
+                        <div class="fade-in-up-delay">
+                            <form class="mobile-form flex flex-col sm:flex-row gap-3 max-w-md"
+                                onsubmit="handleWaitlistSubmit(event)">
+                                <div class="flex-1">
+                                    <input type="email" placeholder="Enter your email address" required
+                                        class="custom-input w-full px-4 py-3 text-sm border border-gray-300 rounded-lg sm:rounded-r-none focus:outline-none transition-all duration-200" />
+                                </div>
+                                <button type="submit"
+                                    class="btn-primary bg-indigo-600 text-white text-sm font-medium px-6 py-3 rounded-lg sm:rounded-l-none hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 whitespace-nowrap">
+                                    Join Waitlist
+                                </button>
+                            </form>
+
+                            <!-- Trust indicators -->
+                            <div class="mt-4 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span>Free to join • No spam • Early access guaranteed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Image -->
+                <div class="fade-in-up order-1 lg:order-2 flex justify-center lg:justify-end">
+                    <div class="relative">
+                        <img src="assets/s 1.png" alt="Startup team collaboration illustration"
+                            class="hero-image-mobile w-[232px] h-[232px] sm:w-[300px] sm:h-[300px] lg:w-[232px] lg:h-[232px] drop-shadow-2xl animate-float object-contain responsive-image" />
+
+                        <!-- Floating elements for visual interest -->
+                        <div
+                            class="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full opacity-20 animate-pulse">
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 w-6 h-6 bg-gradient-to-br from-pink-400 to-red-500 rounded-full opacity-30 animate-pulse"
+                            style="animation-delay: 1s"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Background decorative elements -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+                <div
+                    class="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full blur-3xl opacity-30">
+                </div>
+                <div
+                    class="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full blur-3xl opacity-20">
+                </div>
+            </div>
+            <!-- Centered Horizontal Line -->
+            <div
+                class="hidden lg:block absolute top-[93%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="relative responsive-padding">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7">
+
+            <!-- Main Headline -->
+            <h1
+                class="blog-title font-bold text-gray-900 mb-6 leading-tight w-full max-w-none flex flex-wrap items-center gap-2 text-4xl fade-in-up">
+                Create Products that
+                <span class="inline-block w-[44px] h-[38px]">
+                    <!-- Red Heart SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="38" viewBox="0 0 44 38" fill="none">
+                        <path
+                            d="M33.9869 0.201957C31.1367 0.201957 28.5938 1.53986 26.9318 3.63134L22 9.06759V9.04996L17.0682 3.61371C15.4062 1.52223 12.8633 0.184326 10.0131 0.184326C5.0063 0.184326 0.947372 4.31138 0.947372 9.40257C0.947372 13.8762 4.68094 17.2199 7.38404 20.4322C10.0776 23.6324 12.7706 26.8321 15.4636 30.0323L21.5094 37.2155C21.6731 37.4099 21.8363 37.6038 22 37.7983V37.8159C22.1637 37.6215 22.3269 37.4275 22.4906 37.2331C24.5057 34.8389 26.5208 32.4446 28.5364 30.0499C31.2294 26.8497 33.9229 23.65 36.616 20.4498C39.3191 17.2381 43.0526 13.8943 43.0526 9.4202C43.0526 4.32901 38.9937 0.201957 33.9869 0.201957Z"
+                            fill="#FF0000" />
+                    </svg>
+                </span>
+                Inspire, help
+                <span class="inline-block w-[50px] h-[50px]">
+                    <!-- Blue Shield SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
+                        <path
+                            d="M16.6667 37.5001L25 31.1459L33.3333 37.5001L30.2083 27.1876L38.5417 21.2501H28.3333L25 10.4167L21.6667 21.2501H11.4583L19.7917 27.1876L16.6667 37.5001ZM25 45.8334C22.118 45.8334 19.4097 45.2865 16.875 44.1928C14.3403 43.099 12.1354 41.6147 10.2604 39.7397C8.38541 37.8647 6.90103 35.6598 5.80728 33.1251C4.71353 30.5904 4.16666 27.882 4.16666 25.0001C4.16666 22.1181 4.71353 19.4098 5.80728 16.8751C6.90103 14.3404 8.38541 12.1355 10.2604 10.2605C12.1354 8.3855 14.3403 6.90112 16.875 5.80737C19.4097 4.71362 22.118 4.16675 25 4.16675C27.8819 4.16675 30.5903 4.71362 33.125 5.80737C35.6597 6.90112 37.8646 8.3855 39.7396 10.2605C41.6146 12.1355 43.0989 14.3404 44.1927 16.8751C45.2864 19.4098 45.8333 22.1181 45.8333 25.0001C45.8333 27.882 45.2864 30.5904 44.1927 33.1251C43.0989 35.6598 41.6146 37.8647 39.7396 39.7397C37.8646 41.6147 35.6597 43.099 33.125 44.1928C30.5903 45.2865 27.8819 45.8334 25 45.8334Z"
+                            fill="#E99F16" />
+                    </svg>
+                </span>
+                and
+                <span class="inline-block w-[50px] h-[50px]">
+                    <!-- Yellow Star SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
+                        <path
+                            d="M0 41.6666V35.8853C0 34.7048 0.295139 33.611 0.885417 32.6041C1.47569 31.5971 2.29167 30.8333 3.33333 30.3124C3.81944 30.0694 4.28819 29.8437 4.73958 29.6353C5.22569 29.427 5.72917 29.236 6.25 29.0624V41.6666H0ZM8.33333 27.0833C6.59722 27.0833 5.12153 26.4756 3.90625 25.2603C2.69097 24.0451 2.08333 22.5694 2.08333 20.8333C2.08333 19.0971 2.69097 17.6214 3.90625 16.4062C5.12153 15.1909 6.59722 14.5833 8.33333 14.5833C10.0694 14.5833 11.5451 15.1909 12.7604 16.4062C13.9757 17.6214 14.5833 19.0971 14.5833 20.8333C14.5833 22.5694 13.9757 24.0451 12.7604 25.2603C11.5451 26.4756 10.0694 27.0833 8.33333 27.0833ZM8.33333 22.9166C8.92361 22.9166 9.40972 22.7256 9.79167 22.3437C10.2083 21.927 10.4167 21.4235 10.4167 20.8333C10.4167 20.243 10.2083 19.7569 9.79167 19.3749C9.40972 18.9583 8.92361 18.7499 8.33333 18.7499C7.74306 18.7499 7.23958 18.9583 6.82292 19.3749C6.44097 19.7569 6.25 20.243 6.25 20.8333C6.25 21.4235 6.44097 21.927 6.82292 22.3437C7.23958 22.7256 7.74306 22.9166 8.33333 22.9166ZM8.33333 41.6666V35.8333C8.33333 34.6527 8.62847 33.5763 9.21875 32.6041C9.84375 31.5971 10.6597 30.8333 11.6667 30.3124C13.8194 29.236 16.0069 28.4374 18.2292 27.9166C20.4514 27.361 22.7083 27.0833 25 27.0833C27.2917 27.0833 29.5486 27.361 31.7708 27.9166C33.9931 28.4374 36.1806 29.236 38.3333 30.3124C39.3403 30.8333 40.1389 31.5971 40.7292 32.6041C41.3542 33.5763 41.6667 34.6527 41.6667 35.8333V41.6666H8.33333ZM12.5 37.4999H37.5V35.8333C37.5 35.4513 37.3958 35.1041 37.1875 34.7916C37.0139 34.4791 36.7708 34.236 36.4583 34.0624C34.5833 33.1249 32.691 32.4305 30.7812 31.9791C28.8715 31.493 26.9444 31.2499 25 31.2499C23.0556 31.2499 21.1285 31.493 19.2188 31.9791C17.309 32.4305 15.4167 33.1249 13.5417 34.0624C13.2292 34.236 12.9687 34.4791 12.7604 34.7916C12.5868 35.1041 12.5 35.4513 12.5 35.8333V37.4999ZM25 24.9999C22.7083 24.9999 20.7465 24.1839 19.1146 22.552C17.4826 20.9201 16.6667 18.9583 16.6667 16.6666C16.6667 14.3749 17.4826 12.4131 19.1146 10.7812C20.7465 9.14922 22.7083 8.33325 25 8.33325C27.2917 8.33325 29.2535 9.14922 30.8854 10.7812C32.5174 12.4131 33.3333 14.3749 33.3333 16.6666C33.3333 18.9583 32.5174 20.9201 30.8854 22.552C29.2535 24.1839 27.2917 24.9999 25 24.9999ZM25 20.8333C26.1458 20.8333 27.1181 20.4339 27.9167 19.6353C28.75 18.802 29.1667 17.8124 29.1667 16.6666C29.1667 15.5208 28.75 14.5485 27.9167 13.7499C27.1181 12.9166 26.1458 12.4999 25 12.4999C23.8542 12.4999 22.8646 12.9166 22.0312 13.7499C21.2326 14.5485 20.8333 15.5208 20.8333 16.6666C20.8333 17.8124 21.2326 18.802 22.0312 19.6353C22.8646 20.4339 23.8542 20.8333 25 20.8333ZM41.6667 27.0833C39.9306 27.0833 38.4549 26.4756 37.2396 25.2603C36.0243 24.0451 35.4167 22.5694 35.4167 20.8333C35.4167 19.0971 36.0243 17.6214 37.2396 16.4062C38.4549 15.1909 39.9306 14.5833 41.6667 14.5833C43.4028 14.5833 44.8785 15.1909 46.0938 16.4062C47.309 17.6214 47.9167 19.0971 47.9167 20.8333C47.9167 22.5694 47.309 24.0451 46.0938 25.2603C44.8785 26.4756 43.4028 27.0833 41.6667 27.0833ZM41.6667 22.9166C42.2569 22.9166 42.7431 22.7256 43.125 22.3437C43.5417 21.927 43.75 21.4235 43.75 20.8333C43.75 20.243 43.5417 19.7569 43.125 19.3749C42.7431 18.9583 42.2569 18.7499 41.6667 18.7499C41.0764 18.7499 40.5729 18.9583 40.1562 19.3749C39.7743 19.7569 39.5833 20.243 39.5833 20.8333C39.5833 21.4235 39.7743 21.927 40.1562 22.3437C40.5729 22.7256 41.0764 22.9166 41.6667 22.9166ZM43.75 41.6666V29.0624C44.2708 29.236 44.7569 29.427 45.2083 29.6353C45.6944 29.8437 46.1806 30.0694 46.6667 30.3124C47.7083 30.8333 48.5243 31.5971 49.1146 32.6041C49.7049 33.611 50 34.7048 50 35.8853V41.6666H43.75Z"
+                            fill="#181BB8" />
+                    </svg>
+                </span>
+                dominate.
+            </h1>
+
+            <div class="flex-container justify-center items-stretch my-10 fade-in-up mobile-grid tablet-grid">
+                <!-- Box 1 -->
+                <div class="flex-item transition-transform duration-200">
+                    <img src="assets/original-7673b52416834c309ef061a3ffd453dd 1.png" alt="Blog Section Image"
+                        class="responsive-image image-hover shadow-lg transition-transform duration-300 w-full h-auto max-w-[441px] max-h-[254px] object-cover"
+                        style="box-shadow:0 4px 24px rgba(0,0,0,0.08);" />
+                </div>
+
+                <!-- Box 2 -->
+                <div class="flex-item transition-transform duration-200">
+                    <img src="assets/original-7673b52416834c309ef061a3ffd453dd 2.png" alt="Blog Section Image"
+                        class="responsive-image image-hover shadow-lg transition-transform duration-300 w-full h-auto max-w-[441px] max-h-[254px] object-cover"
+                        style="box-shadow:0 4px 24px rgba(0,0,0,0.08);" />
+                </div>
+
+                <!-- Box 3 -->
+                <div class="flex-item transition-transform duration-200">
+                    <img src="assets/original-7673b52416834c309ef061a3ffd453dd 3.png" alt="Blog Section Image"
+                        class="responsive-image image-hover shadow-lg transition-transform duration-300 w-full h-auto max-w-[441px] max-h-[254px] object-cover"
+                        style="box-shadow:0 4px 24px rgba(0,0,0,0.08);" />
+                </div>
+            </div>
+
+            <!-- Centered Horizontal Line -->
+            <div
+                class="hidden lg:block absolute top-[96%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Platform Overview Section -->
+    <section id="features" class="relative responsive-padding">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7">
+            <!-- Left Content -->
+            <div class="fade-in-up order-2 lg:order-1">
+
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-6"
+                    style="gap: 0.5rem; border: 1px solid #6750A4;">
+
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6 13.5L9 11.2125L12 13.5L10.875 9.7875L13.875 7.65H10.2L9 3.75L7.8 7.65H4.125L7.125 9.7875L6 13.5ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5Z"
+                            fill="#6750A4" />
+                    </svg>
+
+                    <span class="text-sm font-medium" style="color: #6750A4;">Platform Overview</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1 class="hero-title font-bold text-gray-900 mb-6 leading-tight w-full max-w-none">
+                    Modular Workspace for
+                    All Startup Teams and Builders.
+                </h1>
+
+            </div>
+
+            <!-- Centered Horizontal Line -->
+            <div
+                class="hidden lg:block absolute top-[93%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+
+        </div>
+    </section>
+
+    <!-- QNA Overview Section -->
+    <section class="relative responsive-padding" id="features">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7 flex flex-col lg:flex-row items-center gap-10">
+
+            <!-- Left: Accordion -->
+            <div class="w-full fade-in-up">
+                <div class="space-y-4 w-full" id="platform-accordion">
+
+                    <!-- Item 1 -->
+                    <div class="border rounded-lg text-base sm:text-sm">
+                        <button type="button"
+                            class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold focus:outline-none accordion-btn"
+                            data-accordion="1">
+                            Tools for Developers
+                            <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="px-4 pb-3 text-gray-600 hidden accordion-panel">
+                            Code collaboration, version control, API playgrounds, and instant dev environments to ship
+                            faster.
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="border rounded-lg text-base sm:text-sm">
+                        <button type="button"
+                            class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold focus:outline-none accordion-btn"
+                            data-accordion="2">
+                            For Designers & Creators
+                            <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="px-4 pb-3 text-gray-600 hidden accordion-panel">
+                            Real-time design feedback, asset libraries, prototyping tools, and seamless handoff to devs.
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="border rounded-lg text-base sm:text-sm">
+                        <button type="button"
+                            class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold focus:outline-none accordion-btn"
+                            data-accordion="3">
+                            For Founders & Teams
+                            <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="px-4 pb-3 text-gray-600 hidden accordion-panel">
+                            Roadmaps, team management, AI-matching, mentorship, and workspace analytics for growth.
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="border rounded-lg text-base sm:text-sm">
+                        <button type="button"
+                            class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold focus:outline-none accordion-btn"
+                            data-accordion="4">
+                            Everything in One Place
+                            <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="px-4 pb-3 text-gray-600 hidden accordion-panel">
+                            All your tools, docs, and team communication unified for a seamless startup journey.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Centered Horizontal Line -->
+        <div class="responsive-margin">
+            <div
+                class="hidden lg:block absolute top-[93%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+        </div>
+    </section>
+
+    <!-- Plan Overview Section -->
+    <section id="pricing" class="relative responsive-padding" id="pricing">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7">
+
+            <div class="fade-in-up order-2 lg:order-1">
+
+                <!-- Pricing Label -->
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-6"
+                    style="gap: 0.5rem; border: 1px solid #6750A4;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path
+                            d="M3.75 15.75C3.3375 15.75 2.98125 15.6063 2.68125 15.3188C2.39375 15.0188 2.25 14.6625 2.25 14.25V3.75C2.25 3.3375 2.39375 2.9875 2.68125 2.7C2.98125 2.4 3.3375 2.25 3.75 2.25H14.25C14.6625 2.25 15.0125 2.4 15.3 2.7C15.6 2.9875 15.75 3.3375 15.75 3.75V14.25C15.75 14.6625 15.6 15.0188 15.3 15.3188C15.0125 15.6063 14.6625 15.75 14.25 15.75H3.75Z"
+                            fill="#6750A4" />
+                    </svg>
+                    <span class="text-sm font-medium" style="color: #6750A4;">Pricing Details</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1 class="hero-title font-bold text-gray-900 mb-6 leading-tight w-full max-w-none">
+                    Your story, our plan
+                </h1>
+
+                <!-- Responsive Cards -->
+                <div class="responsive-margin">
+                    <div class="flex-container justify-center mobile-grid tablet-grid">
+                        <div class="flex flex-wrap justify-center gap-8 lg:gap-15">
+
+                            <!-- Card 1 -->
+                            <div
+                                class="relative w-full sm:w-[calc(50%-1rem)] lg:w-[380px] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+
+                                <div class="absolute -top-5 -left-10 z-10">
+                                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M106.921 59.9992C115.082 75.2098 108.916 88.9801 93.1788 93.1772C88.9802 108.916 75.2098 115.081 59.9992 106.921C44.7886 115.082 31.0183 108.916 26.8212 93.1788C11.0836 88.9801 4.91779 75.2098 13.0786 59.9992C4.91779 44.7886 11.0836 31.0182 26.8212 26.8211C31.0183 11.0836 44.7886 4.91773 59.9992 13.0786C75.2098 4.91773 88.9802 11.0836 93.1773 26.8211C108.916 31.0182 115.081 44.7886 106.921 59.9992Z"
+                                            fill="#00580A" />
+                                    </svg>
+                                    <div class="absolute top-[45px] left-[45px]">
+
+                                        <svg width="30" height="27" viewBox="0 0 30 27" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M15 0L18.3677 10.0193L29.2658 10.0193L20.4491 16.2115L23.8168 26.2307L15 20.0385L6.18322 26.2307L9.55093 16.2115L0.734152 10.0193L11.6323 10.0193L15 0Z"
+                                                fill="#BAFFCA" />
+                                        </svg>
+
+                                    </div>
+                                </div>
+                                <div
+                                    class="relative bg-green-600 text-white rounded-2xl w-full h-full p-6 shadow-lg z-0">
+                                    <div class="flex items-start ml-[60px] -mt-[10px] mb-4">
+                                        <div>
+                                            <h2 class="text-xl font-bold leading-tight">Free Forever Plan</h2>
+                                            <p class="text-sm">For solo founders, students, or anyone just starting out.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <ul class="text-sm space-y-1 list-disc list-inside mb-4">
+                                        <li>Post & explore unlimited ideas</li>
+                                        <li>Join or form teams with AI matching</li>
+                                        <li>Use public templates & task boards</li>
+                                        <li>Community workspace access</li>
+                                    </ul>
+                                    <br>
+                                    <button onclick="toggleContactPopup('FREE')"
+                                        class="bg-green-800 text-white font-semibold w-full py-2 rounded-lg hover:bg-green-700 transition">Get
+                                        Started Now</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div
+                                class="relative w-full sm:w-[calc(50%-1rem)] lg:w-[380px] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+
+                                <div class="absolute -top-5 -right-10 z-10">
+                                    <div class="relative">
+                                        <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M42.3744 17.2311C52.1925 7.72992 67.8075 7.72992 77.6256 17.2311C80.6299 20.1384 84.3107 22.2571 88.3383 23.3974C101.501 27.1239 109.308 40.606 105.964 53.8337C104.941 57.8812 104.941 62.1187 105.964 66.1662C109.308 79.3939 101.501 92.876 88.3383 96.6025C84.3107 97.7428 80.6299 99.8615 77.6256 102.769C67.8075 112.27 52.1925 112.27 42.3744 102.769C39.3701 99.8615 35.6892 97.7428 31.6617 96.6025C18.4994 92.876 10.6919 79.3939 14.0361 66.1662C15.0593 62.1187 15.0593 57.8812 14.0361 53.8337C10.6919 40.606 18.4994 27.1239 31.6617 23.3974C35.6892 22.2571 39.3701 20.1384 42.3744 17.2311Z"
+                                                fill="#FFBF49" />
+                                        </svg>
+                                        <div class="absolute top-[45px] left-[45px]">
+                                            <svg width="26" height="23" viewBox="0 0 26 23" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13 0L25.9904 22.5H0.00961876L13 0Z" fill="#FDF0DA" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="relative bg-orange-400 text-white rounded-2xl w-full h-full p-6 shadow-lg z-0">
+                                    <div class="mb-4">
+                                        <h2 class="text-xl font-bold leading-tight">For Startups & Solo Builders</h2>
+                                        <p class="text-sm">Ideal for small teams who want momentum, mentorship, and
+                                            visibility.
+                                        </p>
+                                    </div>
+                                    <ul class="text-sm space-y-1 list-disc list-inside mb-4">
+                                        <li>Advanced workspace tools</li>
+                                        <li>On-demand mentor calls</li>
+                                        <li>Launch showcase zone access</li>
+                                        <li>Revenue-share tools</li>
+                                    </ul>
+                                    <br>
+                                    <button onclick="toggleContactPopup('STARTUP')"
+                                        class="bg-orange-500 text-white font-semibold w-full py-2 rounded-lg hover:bg-orange-600 transition">See
+                                        More</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div
+                                class="relative w-full sm:w-[calc(50%-1rem)] lg:w-[380px] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+
+                                <div class="absolute -top-5 -right-10 z-10">
+                                    <div class="relative">
+                                        <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M95.7238 24.2723C91.974 20.5225 83.4297 22.3767 73.1201 28.3203C70.0329 16.827 65.3021 9.47364 59.9989 9.47364C54.6958 9.47364 49.9652 16.8265 46.878 28.3193C36.5689 22.3762 28.0251 20.5223 24.2754 24.272C20.5254 28.022 22.38 36.5672 28.3246 46.8777C16.8288 49.9648 9.47369 54.6961 9.47369 60C9.47368 65.3029 16.8262 70.0334 28.3185 73.1206C22.3735 83.4315 20.5186 91.9771 24.2688 95.7273C28.0192 99.4777 36.5654 97.6224 46.8769 91.6768C49.9641 103.172 54.6952 110.526 59.9989 110.526C65.3027 110.526 70.0339 103.171 73.1211 91.6757C83.4332 97.6219 91.9799 99.4775 95.7304 95.727C99.4806 91.9768 97.6258 83.4315 91.681 73.1208C103.174 70.0336 110.526 65.303 110.526 60C110.526 54.696 103.171 49.9647 91.675 46.8776C97.6193 36.5673 99.4739 28.0223 95.7238 24.2723Z"
+                                                fill="#CDBAFF" />
+                                        </svg>
+                                        <div class="absolute top-[45px] left-[45px]">
+                                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="15" cy="15" r="15" fill="white" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="relative bg-purple-500 text-white rounded-2xl w-full h-full p-6 shadow-lg z-0">
+                                    <div class="mb-4">
+                                        <h2 class="text-xl font-bold leading-tight">For Companies, Teams</h2>
+                                        <p class="text-sm">And Orgs. Build and launch with<br> your team using private
+                                            workspaces <br>and tools.</p>
+                                    </div>
+                                    <ul class="text-sm space-y-1 list-disc list-inside mb-4">
+                                        <li>Set up private workspaces</li>
+                                        <li>Onboard your entire team in minutes</li>
+                                        <li>Access premium templates, tools, and mentor networks</li>
+                                    </ul>
+                                    <button onclick="toggleContactPopup('COMPANY')"
+                                        class="bg-purple-600 text-white font-semibold w-full py-2 rounded-lg hover:bg-purple-700 transition">See
+                                        More</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <!-- Centered Horizontal Line -->
+                    <div class="responsive-margin">
+                        <div
+                            class="hidden lg:block absolute top-[93%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+    <!-- Info Overview Section -->
+    <section id="team" class="relative responsive-padding" id="team">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="fade-in-up">
+                <!-- Pricing Label -->
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-6 mx-auto lg:mx-0"
+                    style="gap: 0.5rem; border: 1px solid #6750A4;">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M11.625 8.25C11.9375 8.25 12.2031 8.14062 12.4219 7.92188C12.6406 7.70312 12.75 7.4375 12.75 7.125C12.75 6.8125 12.6406 6.54688 12.4219 6.32812C12.2031 6.10938 11.9375 6 11.625 6C11.3125 6 11.0469 6.10938 10.8281 6.32812C10.6094 6.54688 10.5 6.8125 10.5 7.125C10.5 7.4375 10.6094 7.70312 10.8281 7.92188C11.0469 8.14062 11.3125 8.25 11.625 8.25ZM6.375 8.25C6.6875 8.25 6.95312 8.14062 7.17188 7.92188C7.39062 7.70312 7.5 7.4375 7.5 7.125C7.5 6.8125 7.39062 6.54688 7.17188 6.32812C6.95312 6.10938 6.6875 6 6.375 6C6.0625 6 5.79688 6.10938 5.57812 6.32812C5.35938 6.54688 5.25 6.8125 5.25 7.125C5.25 7.4375 5.35938 7.70312 5.57812 7.92188C5.79688 8.14062 6.0625 8.25 6.375 8.25ZM9 13.125C9.85 13.125 10.6219 12.8844 11.3156 12.4031C12.0094 11.9219 12.5125 11.2875 12.825 10.5H5.175C5.4875 11.2875 5.99062 11.9219 6.68437 12.4031C7.37812 12.8844 8.15 13.125 9 13.125ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5ZM9 15C10.675 15 12.0938 14.4187 13.2563 13.2563C14.4187 12.0938 15 10.675 15 9C15 7.325 14.4187 5.90625 13.2563 4.74375C12.0938 3.58125 10.675 3 9 3C7.325 3 5.90625 3.58125 4.74375 4.74375C3.58125 5.90625 3 7.325 3 9C3 10.675 3.58125 12.0938 4.74375 13.2563C5.90625 14.4187 7.325 15 9 15Z"
+                            fill="#6750A4" />
+                    </svg>
+                    <span class="text-sm font-medium" style="color: #6750A4;">Meet Wiora</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1
+                    class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight text-center lg:text-left hero-title">
+                    Meet the AI Co-founder
+                </h1>
+
+                <!-- Content Grid -->
+                <div class="flex flex-col lg:flex-row gap-10 max-w-[1386px] mx-auto">
+
+                    <!-- LEFT CONTENT SECTION -->
+                    <div class="flex-item rounded-[15px] p-6 bg-[#f7f7f7] flex flex-col justify-between mobile-spacing">
+                        <div>
+                            <img src="assets/CompressJPEG.online_512x512_image (1) 1.svg" alt="Logo"
+                                class="w-16 h-16 md:w-24 md:h-24 mb-4 responsive-image" />
+                            <h1 class="text-xl md:text-2xl font-bold mb-3">
+                                Hi, I'm <span class="text-green-600">Wiora</span>
+                            </h1>
+                            <p class="text-gray-700 text-sm md:text-base leading-relaxed mb-6 responsive-text">
+                                Your AI Co-Founder, designed by <span
+                                    class="text-orange-500 font-semibold">OpenMind</span> to help you build
+                                smarter, faster, and together. From the first spark to team formation to product launch,
+                                I'm here to guide, accelerate, and co-create with you.
+                            </p>
+                        </div>
+
+                        <!-- Waitlist Form -->
+                        <div class="fade-in-up-delay">
+                            <form class="mobile-form flex flex-col sm:flex-row gap-3 max-w-md"
+                                onsubmit="handleWaitlistSubmit(event)">
+                                <div class="flex-1">
+                                    <input type="email" placeholder="Enter your email address" required
+                                        class="custom-input w-full px-4 py-3 text-sm border border-gray-300 rounded-lg sm:rounded-r-none focus:outline-none transition-all duration-200" />
+                                </div>
+                                <button type="submit"
+                                    class="btn-primary bg-indigo-600 text-white text-sm font-medium px-6 py-3 rounded-lg sm:rounded-l-none hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 whitespace-nowrap">
+                                    Join Waitlist
+                                </button>
+                            </form>
+
+                            <!-- Trust indicators -->
+                            <div class="mt-4 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span>Free to join • No spam • Early access guaranteed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT CARDS SECTION -->
+                    <div class="flex-item mobile-grid tablet-grid">
+                        <!-- Card 1 -->
+                        <div
+                            class="mobile-card rounded-[15px] mb-[10px] p-4 sm:p-6 bg-[#f7f7f7] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-indigo-50 border-l-[5px] border-indigo-600">
+                            <div class="flex items-center mb-3 sm:mb-4">
+                                <div
+                                    class="hidden sm:flex w-10 h-10 rounded-full bg-indigo-100 items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="font-bold text-base sm:text-lg">Quick Start</h3>
+                            </div>
+                            <p class="text-gray-600 text-xs sm:text-sm responsive-text">Get your project off the ground
+                                in minutes with Wiora's guided setup process.</p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div
+                            class="mobile-card rounded-[15px] mb-[10px] p-4 sm:p-6 bg-[#f7f7f7] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-indigo-50 border-l-[5px] border-green-600">
+                            <div class="flex items-center mb-3 sm:mb-4">
+                                <div
+                                    class="hidden sm:flex w-10 h-10 rounded-full bg-green-100 items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="font-bold text-base sm:text-lg">Smart Tools</h3>
+                            </div>
+                            <p class="text-gray-600 text-xs sm:text-sm responsive-text">Access powerful AI-driven tools
+                                for market research, prototyping, and team building.</p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div
+                            class="mobile-card rounded-[15px] p-4 sm:p-6 bg-[#f7f7f7] sm:col-span-2 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-indigo-50 border-l-[5px] border-blue-600">
+                            <div class="flex items-center mb-3 sm:mb-4">
+                                <div
+                                    class="hidden sm:flex w-10 h-10 rounded-full bg-blue-100 items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="font-bold text-base sm:text-lg">24/7 Support</h3>
+                            </div>
+                            <p class="text-gray-600 text-xs sm:text-sm responsive-text">Your AI co-founder is always
+                                available to answer questions and provide guidance.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Centered Horizontal Line -->
+                <div class="responsive-margin">
+                    <div
+                        class="hidden lg:block absolute top-[96%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- AI Overview Section -->
+    <section class="relative responsive-padding flex items-center justify-center min-h-[250px]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7 flex flex-col items-center justify-center w-full fade-in-up">
+
+            <!-- Tagline -->
+            <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-4"
+                style="gap: 0.25rem; border: 1px solid #6750A4;">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M6 13.5L9 11.2125L12 13.5L10.875 9.7875L13.875 7.65H10.2L9 3.75L7.8 7.65H4.125L7.125 9.7875L6 13.5ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5Z"
+                        fill="#6750A4" />
+                </svg>
+                <span class="text-sm font-medium text-[#6750A4]">Ask Anything</span>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="font-bold text-gray-900 mb-2 leading-snug text-center text-xl sm:text-2xl max-w-[700px]">
+                Have questions before joining?
+            </h1>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-base sm:text-lg leading-normal text-center mb-6 max-w-[600px]">
+                Wiora’s here if you're wondering...
+            </p>
+
+            <!-- Responsive Outer Container -->
+            <div
+                class="w-full max-w-[736px] bg-[#D9D9D9] rounded-[50px] shadow-md flex items-center justify-center px-1 sm:px-3 py-1 sm:py-2">
+
+                <!-- Input Field Inside -->
+                <div class="w-full max-w-[721px] h-[55px] bg-white rounded-full flex items-center px-4 shadow"
+                    style="box-shadow: 0px 4px 4px 0px #ACA7A7;">
+                    <input id="questionInput" type="text" placeholder="What can we help you with before you join?"
+                        class="w-full h-full bg-transparent outline-none text-gray-700 placeholder-gray-500 text-sm sm:text-base" />
+
+                    <!-- Enter Icon -->
+                    <button id="submitBtn" onclick="fetchAnswer()" class="ml-2 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#6750A4]" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                </div>
+
+            </div>
+            <!-- Response Box -->
+            <div id="answerBox"
+                class="hidden mt-4 max-w-[736px] w-full bg-gray-100 rounded-[20px] px-6 py-4 text-gray-800 shadow transition-all duration-300 ease-in-out overflow-hidden">
+                <div id="answerText"
+                    class="text-base leading-relaxed break-words max-h-[400px] overflow-y-auto block whitespace-pre-wrap">
+                </div>
+            </div>
+
+
+            <div class="w-full max-w-[736px] mx-auto mt-4 flex flex-wrap gap-3 justify-center items-center">
+
+                <!-- Chip -->
+                <div
+                    class="chip-clickable flex items-center h-[56px] px-4 bg-[#E8DEF8] hover:bg-[#D0C9EC] transition duration-200 rounded-full cursor-pointer">
+
+                    <!-- Icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="mr-2">
+                        <path
+                            d="M8 18L12 14.95L16 18L14.5 13.05L18.5 10.2H13.6L12 5L10.4 10.2H5.5L9.5 13.05L8 18ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22Z"
+                            fill="#4A4459" />
+                    </svg>
+                    <!-- Chip Text -->
+                    <span class="text-[#4A4459] text-sm font-medium">What is OpennMind?</span>
+                </div>
+
+                <!-- Chip 2 -->
+                <div
+                    class="chip-clickable flex items-center h-[56px] px-4 bg-[#E8DEF8] hover:bg-[#D0C9EC] transition duration-200 rounded-full cursor-pointer">
+
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="mr-2">
+                        xmlns="http://www.w3.org/2000/svg" class="mr-2">
+                        <path
+                            d="M8 18L12 14.95L16 18L14.5 13.05L18.5 10.2H13.6L12 5L10.4 10.2H5.5L9.5 13.05L8 18ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22Z"
+                            fill="#4A4459" />
+                    </svg>
+                    <span class="text-[#4A4459] text-sm font-medium">What is Wiora?</span>
+                </div>
+                <div
+                    class="chip-clickable flex items-center h-[56px] px-4 bg-[#E8DEF8] hover:bg-[#D0C9EC] transition duration-200 rounded-full cursor-pointer">
+
+                    <!-- Icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="mr-2">
+                        <path
+                            d="M8 18L12 14.95L16 18L14.5 13.05L18.5 10.2H13.6L12 5L10.4 10.2H5.5L9.5 13.05L8 18ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22Z"
+                            fill="#4A4459" />
+                    </svg>
+                    <span class="text-[#4A4459] text-sm font-medium">How does it help me?</span>
+                </div>
+                <div
+                    class="chip-clickable flex items-center h-[56px] px-4 bg-[#E8DEF8] hover:bg-[#D0C9EC] transition duration-200 rounded-full cursor-pointer">
+
+                    <!-- Icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="mr-2">
+                        <path
+                            d="M8 18L12 14.95L16 18L14.5 13.05L18.5 10.2H13.6L12 5L10.4 10.2H5.5L9.5 13.05L8 18ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22Z"
+                            fill="#4A4459" />
+                    </svg>
+                    <span class="text-[#4A4459] text-sm font-medium">Is it Free?</span>
+                </div>
+
+            </div>
+
+
+            <!-- Decorative Line -->
+            <br>
+            <Br>
+            <div
+                class="hidden lg:block absolute top-[100%]  left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+        </div>
+    </section>
+    <!-- ADS Overview Section -->
+
+
+    <section class="relative responsive-padding flex items-center justify-center min-h-[250px]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7 flex flex-col items-center justify-center w-full fade-in-up">
+
+
+
+            <!-- Main Headline -->
+            <br>
+            <h1
+                class="font-bold text-gray-900 mb-2 leading-snug text-center text-xl sm:text-2xl max-w-[700px] hero-title">
+                In collaboration with
+            </h1>
+            <br>
+
+            <div class="collab-img-container">
+                <img src="assets/WhatsApp Image 2025-08-05 at 11.33.32 PM 1 (1).png" alt="Collaboration Partner"
+                    class="collab-img" />
+            </div>
+            <!-- Decorative Line -->
+            <br>
+            <Br>
+            <div
+                class="hidden lg:block absolute top-[100%] left-1/2 transform -translate-x-1/2 w-[57%] h-[1px] bg-gray-300 z-0  fade-in-up">
+            </div>
+        </div>
+    </section>
+    <section id="waitlist" class="relative responsive-padding flex items-center justify-center min-h-[250px]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-7 flex flex-col items-center justify-center w-full fade-in-up">
+
+
+
+            <!-- Main Headline -->
+            <br>
+            <h1
+                class="font-bold text-gray-900 mb-2 leading-snug text-center text-xl sm:text-2xl max-w-[700px] hero-title">
+                Join Waitlist Now
+            </h1>
+            <br>
+            <!-- Waitlist Form -->
+            <div class="fade-in-up-delay">
+                <form class="mobile-form flex flex-col sm:flex-row gap-3 max-w-md"
+                    onsubmit="handleWaitlistSubmit(event)">
+                    <div class="flex-1">
+                        <input type="email" placeholder="Enter your email address" required
+                            class="custom-input w-full px-4 py-3 text-sm border border-gray-300 rounded-lg sm:rounded-r-none focus:outline-none transition-all duration-200" />
+                    </div>
+                    <button type="submit"
+                        class="btn-primary bg-indigo-600 text-white text-sm font-medium px-6 py-3 rounded-lg sm:rounded-l-none hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 whitespace-nowrap">
+                        Join Waitlist
+                    </button>
+                </form>
+
+                <!-- Trust indicators -->
+                <div class="mt-4 flex items-center text-xs text-gray-500">
+                    <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span>Free to join • No spam • Early access guaranteed</span>
+                </div>
+            </div>
+
+            <br>
+            <Br>
+
+        </div>
+    </section>
+    <!-- Footer start -->
+    <footer class="w-full flex flex-col items-center justify-center bg-white py-10 mt-12 border-t border-gray-200">
+        <div class="flex flex-col items-center gap-4">
+            <span class="font-[Manrope] font-medium text-[20px] text-gray-900 mb-2">Connect with us</span>
+            <!-- Social SVGs -->
+
+            <div class="w-full flex flex-row justify-center items-center gap-4">
+
+                <!-- YouTube -->
+                <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                        <rect width="38" height="38" rx="19" fill="#1E1F1E" />
+                        <path
+                            d="M17 22L22.19 19L17 16V22ZM28.56 14.17C28.69 14.64 28.78 15.27 28.84 16.07C28.91 16.87 28.94 17.56 28.94 18.16L29 19C29 21.19 28.84 22.8 28.56 23.83C28.31 24.73 27.73 25.31 26.83 25.56C26.36 25.69 25.5 25.78 24.18 25.84C22.88 25.91 21.69 25.94 20.59 25.94L19 26C14.81 26 12.2 25.84 11.17 25.56C10.27 25.31 9.69 24.73 9.44 23.83C9.31 23.36 9.22 22.73 9.16 21.93C9.09 21.13 9.06 20.44 9.06 19.84L9 19C9 16.81 9.16 15.2 9.44 14.17C9.69 13.27 10.27 12.69 11.17 12.44C11.64 12.31 12.5 12.22 13.82 12.16C15.12 12.09 16.31 12.06 17.41 12.06L19 12C23.19 12 25.8 12.16 26.83 12.44C27.73 12.69 28.31 13.27 28.56 14.17Z"
+                            fill="#F8F8F8" />
+                    </svg>
+                </a>
+                <!-- Instagram -->
+                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                        <rect width="38" height="38" rx="19" fill="#1E1F1E" />
+                        <path
+                            d="M68.8 9H77.2C80.4 9 83 11.6 83 14.8V23.2C83 24.7383 82.3889 26.2135 81.3012 27.3012C80.2135 28.3889 78.7383 29 77.2 29H68.8C65.6 29 63 26.4 63 23.2V14.8C63 13.2617 63.6111 11.7865 64.6988 10.6988C65.7865 9.61107 67.2617 9 68.8 9ZM68.6 11C67.6452 11 66.7295 11.3793 66.0544 12.0544C65.3793 12.7295 65 13.6452 65 14.6V23.4C65 25.39 66.61 27 68.6 27H77.4C78.3548 27 79.2705 26.6207 79.9456 25.9456C80.6207 25.2705 81 24.3548 81 23.4V14.6C81 12.61 79.39 11 77.4 11H68.6ZM78.25 12.5C78.5815 12.5 78.8995 12.6317 79.1339 12.8661C79.3683 13.1005 79.5 13.4185 79.5 13.75C79.5 14.0815 79.3683 14.3995 79.1339 14.6339C78.8995 14.8683 78.5815 15 78.25 15C77.9185 15 77.6005 14.8683 77.3661 14.6339C77.1317 14.3995 77 14.0815 77 13.75C77 13.4185 77.1317 13.1005 77.3661 12.8661C77.6005 12.6317 77.9185 12.5 78.25 12.5ZM73 14C74.3261 14 75.5979 14.5268 76.5355 15.4645C77.4732 16.4021 78 17.6739 78 19C78 20.3261 77.4732 21.5979 76.5355 22.5355C75.5979 23.4732 74.3261 24 73 24C71.6739 24 70.4021 23.4732 69.4645 22.5355C68.5268 21.5979 68 20.3261 68 19C68 17.6739 68.5268 16.4021 69.4645 15.4645C70.4021 14.5268 71.6739 14 73 14ZM73 16C72.2044 16 71.4413 16.3161 70.8787 16.8787C70.3161 17.4413 70 18.2044 70 19C70 19.7956 70.3161 20.5587 70.8787 21.1213C71.4413 21.6839 72.2044 22 73 22C73.7956 22 74.5587 21.6839 75.1213 21.1213C75.6839 20.5587 76 19.7956 76 19C76 18.2044 75.6839 17.4413 75.1213 16.8787C74.5587 16.3161 73.7956 16 73 16Z"
+                            fill="#F8F8F8" transform="translate(-54)" />
+                    </svg>
+                </a>
+                <!-- Facebook -->
+                <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                        <rect width="38" height="38" rx="19" fill="#1E1F1E" />
+                        <path
+                            d="M124.198 28.5H128.198V20.49H131.802L132.198 16.51H128.198V14.5C128.198 14.2348 128.303 13.9804 128.491 13.7929C128.678 13.6054 128.933 13.5 129.198 13.5H132.198V9.5H129.198C127.872 9.5 126.6 10.0268 125.662 10.9645C124.725 11.9021 124.198 13.1739 124.198 14.5V16.51H122.198L121.802 20.49H124.198V28.5Z"
+                            fill="#F8F8F8" transform="translate(-108)" />
+                    </svg>
+                </a>
+                <!-- Twitter/X -->
+                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                        <rect width="38" height="38" rx="19" fill="#1E1F1E" />
+                        <path
+                            d="M191.46 13C190.69 13.35 189.86 13.58 189 13.69C189.88 13.16 190.56 12.32 190.88 11.31C190.05 11.81 189.13 12.16 188.16 12.36C187.37 11.5 186.26 11 185 11C182.65 11 180.73 12.92 180.73 15.29C180.73 15.63 180.77 15.96 180.84 16.27C177.28 16.09 174.11 14.38 172 11.79C171.63 12.42 171.42 13.16 171.42 13.94C171.42 15.43 172.17 16.75 173.33 17.5C172.62 17.5 171.96 17.3 171.38 17V17.03C171.38 19.11 172.86 20.85 174.82 21.24C174.191 21.4122 173.53 21.4362 172.89 21.31C173.162 22.1625 173.694 22.9084 174.411 23.4429C175.128 23.9775 175.995 24.2737 176.89 24.29C175.374 25.4904 173.494 26.1393 171.56 26.13C171.22 26.13 170.88 26.11 170.54 26.07C172.44 27.29 174.7 28 177.12 28C185 28 189.33 21.46 189.33 15.79C189.33 15.6 189.33 15.42 189.32 15.23C190.16 14.63 190.88 13.87 191.46 13Z"
+                            fill="#F8F8F8" transform="translate(-162)" />
+                    </svg>
+                </a>
+            </div>
+            <!-- Links -->
+            <!-- ...existing code... -->
+            <div class="flex flex-wrap gap-3 sm:gap-6 mt-6 justify-center items-center text-center w-full max-w-xl">
+                <a href="#"
+                    class="font-[Manrope] font-medium text-[15px] sm:text-[16px] text-gray-700 hover:text-indigo-600 transition">Support</a>
+                <span class="text-gray-400 font-[Manrope] font-medium text-[15px] sm:text-[16px]">|</span>
+                <a href="#"
+                    class="font-[Manrope] font-medium text-[15px] sm:text-[16px] text-gray-700 hover:text-indigo-600 transition">Contact
+                    Us</a>
+                <span class="text-gray-400 font-[Manrope] font-medium text-[15px] sm:text-[16px]">|</span>
+                <a href="#"
+                    class="font-[Manrope] font-medium text-[15px] sm:text-[16px] text-gray-700 hover:text-indigo-600 transition">Terms</a>
+                <!-- Mobile line break after 3rd link -->
+                <span
+                    class="text-gray-400 font-[Manrope] font-medium text-[15px] sm:text-[16px] hidden sm:inline">|</span>
+                <div class="w-full block sm:hidden"></div>
+                <a href="#"
+                    class="font-[Manrope] font-medium text-[15px] sm:text-[16px] text-gray-700 hover:text-indigo-600 transition">Rules</a>
+                <span class="text-gray-400 font-[Manrope] font-medium text-[15px] sm:text-[16px]">|</span>
+                <a href="#"
+                    class="font-[Manrope] font-medium text-[15px] sm:text-[16px] text-gray-700 hover:text-indigo-600 transition">Privacy</a>
+            </div>
+            <!-- ...existing code... -->
+        </div>
+    </footer>
+
+    <!-- Success Message (initially hidden) -->
+    <div id="successMessage"
+        class="hidden fixed left-1/2 bottom-8 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000] flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd" />
+        </svg>
+        <span>Successfully joined the waitlist!</span>
+    </div>
+
+
+    <!-- Fixed Contact Popup -->
+    <div id="contactPopup" class="fixed inset-0 z-[1000] hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+        <!-- Mobile Responsive Popup Container -->
+        <div
+            class="fixed inset-0 sm:inset-auto sm:top-1/2 sm:left-1/2 w-full h-full sm:h-auto sm:w-[95%] sm:max-w-[520px] sm:-translate-x-1/2 sm:-translate-y-1/2 glass-effect sm:rounded-3xl overflow-y-auto">
+            <!-- Close Button - Always Fixed at Top Right -->
+            <div class="sticky top-0 left-0 right-0 flex justify-end p-4 z-50 bg-transparent">
+                <button onclick="toggleContactPopup()"
+                    class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Form Content -->
+            <div class="px-4 sm:px-8 pb-8">
+                <!-- Form Header -->
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Let's Connect</h2>
+                    <p class="text-white/70 text-sm sm:text-base">Share your vision, and we'll make it reality</p>
+                </div>
+
+                <!-- 1. Form fields me id add karo -->
+                <form id="contactForm" onsubmit="submitContactForm(event)" class="space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <label class="block text-sm font-medium text-white/90 mb-1.5">Full Name *</label>
+                            <input id="contactName" type="text" required
+                                class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder:text-white/60 font-medium"
+                                placeholder="John Doe">
+                        </div>
+                        <div class="w-full">
+                            <label class="block text-sm font-medium text-white/90 mb-1.5">Email Address *</label>
+                            <input id="contactEmail" type="email" required
+                                class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder:text-white/60 font-medium"
+                                placeholder="john@example.com">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <label class="block text-sm font-medium text-white/90 mb-1.5">Phone Number Optional</label>
+                            <input id="contactPhone" type="tel"
+                                class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder:text-white/60 font-medium"
+                                placeholder="Phone number">
+                        </div>
+                        <div class="w-full">
+                            <label class="block text-sm font-medium text-white/90 mb-1.5">Company Name</label>
+                            <input id="contactCompany" type="text"
+                                class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder:text-white/60 font-medium"
+                                placeholder="Your company">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white/90 mb-1.5">Business Category</label>
+                        <select id="contactCategory"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white font-medium">
+                            <option value="" class="bg-gray-800">Select category</option>
+                            <option value="technology" class="bg-gray-800">Technology</option>
+                            <option value="retail" class="bg-gray-800">Retail</option>
+                            <option value="healthcare" class="bg-gray-800">Healthcare</option>
+                            <option value="education" class="bg-gray-800">Education</option>
+                            <option value="other" class="bg-gray-800">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-white/90 mb-1.5">Project Details Optional</label>
+                        <textarea id="contactDetails" rows="4" maxlength="3000"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder:text-white/60 font-medium resize-none"
+                            placeholder="Tell us about your project..."></textarea>
+                        <div class="flex justify-between items-center mt-1.5 text-xs text-white/60">
+                            <span>Max 3000 characters</span>
+                            <span><span id="charCount">0</span>/3000</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full gradient-button text-white font-semibold py-4 rounded-xl">
+                        Send Message
+                    </button>
+                    <div class="text-center">
+                        <p class="text-xs text-white/60">🔒 Your information is secure</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        // Handle Enter key
+
+        const input = document.getElementById('questionInput');
+        const answerBox = document.getElementById('answerBox');
+        const answerText = document.getElementById('answerText');
+        const submitBtn = document.getElementById('submitBtn');
+        // Handle Enter key
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchAnswer();
+        });
+        const chips = document.querySelectorAll('.chip-clickable');
+
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const text = chip.querySelector('span')?.innerText?.trim();
+                if (!text) return;
+
+                input.value = text;
+                fetchAnswer(); // trigger the answer logic
+            });
+        });
+
+
+        async function fetchAnswer() {
+            const question = input.value.trim();
+            if (!question) return;
+
+            answerBox.classList.remove('hidden');
+            answerBox.classList.add('opacity-100', 'scale-100');
+            answerText.innerHTML = 'Thinking...';
+
+            try {
+                const res = await fetch(`ask.php?question=${encodeURIComponent(question)}`);
+                const data = await res.json();
+
+                if (!data.answer || typeof data.answer !== 'string') {
+                    answerText.innerText = 'No answer received.';
+                    return;
+                }
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data.answer;
+
+                // Extract visible text and keep HTML formatting
+                const nodes = Array.from(tempDiv.childNodes);
+                answerText.innerHTML = ''; // clear before typing
+
+                let i = 0;
+                const speed = 20;
+
+                function typeNode(nodeList, parent) {
+                    if (i >= nodeList.length) return;
+
+                    const node = nodeList[i];
+
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        // Type out text node character-by-character
+                        let text = node.textContent;
+                        let charIndex = 0;
+
+                        function typeChar() {
+                            if (charIndex < text.length) {
+                                parent.innerHTML += text.charAt(charIndex);
+                                charIndex++;
+                                setTimeout(typeChar, speed);
+                            } else {
+                                i++;
+                                typeNode(nodeList, parent);
+                            }
+                        }
+
+                        typeChar();
+                    } else if (node.nodeType === Node.ELEMENT_NODE) {
+                        const clone = node.cloneNode(false); // no children yet
+                        parent.appendChild(clone);
+                        const childNodes = Array.from(node.childNodes);
+                        i++;
+                        typeNode(childNodes.concat(nodeList.slice(i)), clone); // recurse
+                    } else {
+                        i++;
+                        typeNode(nodeList, parent);
+                    }
+                }
+
+                typeNode(nodes, answerText);
+
+            } catch (err) {
+                answerText.innerText = 'Something went wrong. Please try again.';
+                console.error(err);
+            }
+        }
+
+        let type = '';
+
+
+       // ...existing code...
+
+function toggleContactPopup(mes) {
+    if (mes) {
+        type = mes;
+    }
+    const popup = document.getElementById('contactPopup');
+    const popupCard = popup.querySelector('.glass-effect');
+    const body = document.body;
+
+    if (popup.classList.contains('hidden')) {
+        popup.classList.remove('hidden');
+        // Reset animation
+        popupCard.classList.remove('popup-enter');
+        // Force reflow to restart animation
+        void popupCard.offsetWidth;
+        popupCard.classList.add('popup-enter');
+        body.classList.add('body-scroll-lock');
+    } else {
+        // Add exit animation
+        popupCard.classList.remove('popup-enter');
+        popupCard.classList.add('popup-exit');
+        setTimeout(() => {
+            popup.classList.add('hidden');
+            popupCard.classList.remove('popup-exit');
+        }, 350); // Match with exit animation duration
+        body.classList.remove('body-scroll-lock');
+    }
+}
+
+// ...existing code...
+
+      
+    // Remove any duplicate event listeners on the contact form
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        // Remove any previous submit handlers
+        contactForm.onsubmit = null;
+        contactForm.addEventListener('submit', submitContactForm);
+    }
+
+    // Character counter for textarea (already correct)
+    const textarea = document.getElementById('contactDetails');
+    const charCount = document.getElementById('charCount');
+    if (textarea && charCount) {
+        textarea.addEventListener('input', function () {
+            const count = this.value.length;
+            charCount.textContent = count;
+            if (count > 2700) {
+                charCount.classList.remove('text-white/80');
+                charCount.classList.add('text-red-400');
+            } else if (count > 2400) {
+                charCount.classList.remove('text-white/80', 'text-red-400');
+                charCount.classList.add('text-yellow-400');
+            } else {
+                charCount.classList.remove('text-red-400', 'text-yellow-400');
+                charCount.classList.add('text-white/80');
+            }
+        });
+    }
+
+    // --- FIX: submitContactForm should NOT be declared multiple times ---
+    // Remove any duplicate function declarations of submitContactForm in your script!
+
+    function submitContactForm(event) {
+        event.preventDefault();
+
+        var name = document.getElementById('contactName').value.trim();
+        var email = document.getElementById('contactEmail').value.trim();
+        var phone = document.getElementById('contactPhone').value.trim();
+        var company = document.getElementById('contactCompany').value.trim();
+        var category = document.getElementById('contactCategory').value;
+        var details = document.getElementById('contactDetails').value.trim();
+
+        var data = {
+            name: name,
+            email: email,
+            phone: phone,
+            company_name: company,
+            company_category: category,
+            project_details: details,
+            type: type // Add type if provided
+        };
+
+        var submitButton = event.target.querySelector('button[type="submit"]');
+        var originalText = submitButton.innerHTML;
+        submitButton.innerHTML = `<span class="flex items-center justify-center">Sending...</span>`;
+        submitButton.disabled = true;
+
+        fetch('join.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    showSuccessMessage();
+                    event.target.reset();
+                    toggleContactPopup();
+                } else {
+                    throw new Error(res.message || 'Submission failed');
+                }
+            })
+            .catch(err => {
+                alert('Error: ' + err.message);
+            })
+            .finally(() => {
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            });
+    }
+
+    // Close popup when clicking outside
+    document.getElementById('contactPopup').addEventListener('click', function (event) {
+        if (event.target === this) {
+            toggleContactPopup();
+        }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !document.getElementById('contactPopup').classList.contains('hidden')) {
+                toggleContactPopup();
+            }
+        });
+
+        // Smooth scrolling for anchor links with header offset
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId.length > 1 && document.querySelector(targetId)) {
+                    e.preventDefault();
+                    const header = document.querySelector('header');
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const target = document.querySelector(targetId);
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10; // 10px extra gap
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        document.querySelectorAll('#platform-accordion .accordion-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function () {
+                const panel = this.parentElement.querySelector('.accordion-panel');
+                const isOpen = !panel.classList.contains('hidden');
+
+                // Close all
+                document.querySelectorAll('#platform-accordion .accordion-panel').forEach(p => p.classList.add('hidden'));
+                document.querySelectorAll('#platform-accordion .accordion-btn svg').forEach(svg => svg.classList.remove('rotate-180'));
+
+                // Open hovered
+                if (!isOpen) {
+                    panel.classList.remove('hidden');
+                    this.querySelector('svg').classList.add('rotate-180');
+                }
+            });
+        });
+
+        // Prevent overlay click from closing menu when clicking inside the menu
+        document.getElementById('mobileMenu').addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const body = document.body;
+
+            if (menu.classList.contains('open')) {
+                // Close menu
+                menu.classList.remove('open');
+                overlay.classList.remove('active');
+                body.classList.remove('body-scroll-lock'); // Remove the class
+            } else {
+                // Open menu
+                menu.classList.add('open');
+                overlay.classList.add('active');
+                body.classList.add('body-scroll-lock'); // Add the class
+            }
+        }
+        // Close mobile menu when clicking on navigation links
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggleMobileMenu();
+                document.body.classList.remove('body-scroll-lock');
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                const mobileMenu = document.getElementById('mobileMenu');
+                const overlay = document.getElementById('mobileMenuOverlay');
+                const body = document.body;
+
+                mobileMenu.classList.remove('open');
+                overlay.classList.add('hidden');
+                body.classList.remove('body-scroll-lock');
+            }
+        });
+
+        // Event listener to prevent menu close when clicking inside menu
+        document.getElementById('mobileMenu').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+
+        function handleWaitlistSubmit(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+
+            // Pre-fill email in popup
+            const popupEmailInput = document.querySelector('#contactPopup input[type="email"]');
+            if (popupEmailInput) {
+                popupEmailInput.value = email;
+            }
+
+            // Open popup
+            toggleContactPopup();
+        }
+
+        // Add a new function for regular popup open (without email)
+        function openContactPopup() {
+            // Reset form first
+            const form = document.querySelector('#contactPopup form');
+            if (form) {
+                form.reset();
+            }
+            toggleContactPopup();
+        }
+
+        // Show success message
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.remove('hidden');
+
+            setTimeout(() => {
+                successMessage.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Close mobile menu when clicking on navigation links
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggleMobileMenu();
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                const mobileMenu = document.getElementById('mobileMenu');
+                const overlay = document.getElementById('mobileMenuOverlay');
+                const body = document.body;
+
+                mobileMenu.classList.remove('open');
+                overlay.classList.add('hidden');
+                body.classList.remove('overflow-hidden');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Enhanced touch handling for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                const mobileMenu = document.getElementById('mobileMenu');
+
+                if (diff > 0 && mobileMenu.classList.contains('open')) {
+                    // Swipe left to close menu
+                    toggleMobileMenu();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
