@@ -4,7 +4,7 @@ Before running the project, you must update your API keys in two files: **ask.ph
 
 ---
 
-Image
+
 <img width="1902" height="910" alt="image" src="https://github.com/user-attachments/assets/b65badf6-49e1-40e4-b251-47327fd34453" />
 
 Demo: 
